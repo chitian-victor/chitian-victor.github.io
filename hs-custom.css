@@ -1,15 +1,17 @@
+* {
+  margin: 0;
+  padding: 0;
+}
 body {
-  background: linear-gradient(120deg, #f5f7fa, #eef2f5) !important; /* 同色系渐变，柔和自然 */
-  background-attachment: fixed !important; /* 固定渐变，滚动时不重复 */
+  /* 淡天蓝 → 薄荷蓝 */
+  background: linear-gradient(120deg, #d4eef9, #e6f7ff) !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background-attachment: fixed !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
 }
 #content-wrap {
   background-color: #ffffff !important;
-}
-
-/* 背景渐变 */
-#web_bg{
-    /*紫粉渐变*/
-    /*background-image: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%);*/
-    /*粉白蓝*/
-    background-image: linear-gradient(-225deg, #dfbacd 0%, #B8DCFF 48%, #58abf3 100%);
+  border: none !important;
 }
