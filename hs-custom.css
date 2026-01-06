@@ -1,3 +1,4 @@
+/*整体网页背景*/
 * {
   margin: 0;
   padding: 0;
@@ -16,6 +17,8 @@ body {
   border: none !important;
 }
 
+/*网页最上方的 banner*/
+
 #nav {
   background-color: #76deea !important;
   box-shadow: 0 2px 8px rgba(180, 220, 240, 0.6) !important;
@@ -23,4 +26,31 @@ body {
 }
 #nav a:hover {
   color: #2e90e5 !important; /* 更亮的天蓝 hover 色 */
+}
+
+/*  文章：修复 GitHub.io 块引用内列表靠左的问题 */
+/* 1. 统一块引用的基础缩进 */
+blockquote {
+  padding-left: 1.2em !important;  /* 调整引用左侧缩进（可微调） */
+  margin-left: 0 !important;
+  border-left: 3px solid #4a90e2 !important; /* 适配你的蓝色调 */
+  background-color: #f8f9fa !important;
+}
+
+/* 2. 修复引用内无序列表的缩进 */
+blockquote ul {
+  margin-left: 1em !important;  /* 给列表加缩进，和引用外对齐 */
+  padding-left: 0 !important;
+}
+
+/* 3. 修复引用内有序列表的缩进 */
+blockquote ol {
+  margin-left: 1.2em !important; /* 有序列表标记稍宽，缩进略大 */
+  padding-left: 0 !important;
+}
+
+/* 4. 修复列表项的缩进（避免文字贴标记） */
+blockquote li {
+  margin-bottom: 0.5em !important;
+  line-height: 1.6 !important;
 }
