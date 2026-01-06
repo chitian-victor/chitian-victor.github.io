@@ -1,0 +1,15 @@
+body {
+  background: linear-gradient(120deg, #f5f7fa, #eef2f5) !important; /* 同色系渐变，柔和自然 */
+  background-attachment: fixed !important; /* 固定渐变，滚动时不重复 */
+}
+#content-wrap {
+  background-color: #ffffff !important;
+}
+
+/* 背景渐变 */
+#web_bg{
+    /*紫粉渐变*/
+    /*background-image: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%);*/
+    /*粉白蓝*/
+    background-image: linear-gradient(-225deg, #dfbacd 0%, #B8DCFF 48%, #58abf3 100%);
+}
