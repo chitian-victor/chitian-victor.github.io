@@ -38,19 +38,19 @@ blockquote {
 }
 
 /* 2. 修复引用内无序列表的缩进 */
-blockquote ul {
+ ul {
   margin-left: 1em !important;  /* 给列表加缩进，和引用外对齐 */
   padding-left: 0 !important;
 }
 
 /* 3. 修复引用内有序列表的缩进 */
-blockquote ol {
+ ol {
   margin-left: 1.2em !important; /* 有序列表标记稍宽，缩进略大 */
   padding-left: 0 !important;
 }
 
 /* 4. 修复列表项的缩进（避免文字贴标记） */
-blockquote li {
+ li {
   margin-bottom: 0.5em !important;
   line-height: 1.6 !important;
 }
