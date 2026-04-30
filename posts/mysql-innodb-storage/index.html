@@ -1,0 +1,394 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>MySQL-InnoDB的存储方式 | Chitian's Blogs</title><meta name="author" content="chitian-victor"><meta name="copyright" content="chitian-victor"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="一、 从一条记录说起 这里说的存储方式主要以聚簇索引为例  1.  准备数据 建表  12345create table t1(c1 varchar(10),c2 varchar(10) not null,c3 char(10),c4 varchar(10)) charset&#x3D;ascii row_format&#x3D;compact;   插入数据  12insert into t1(c1,c2,c3,c">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL-InnoDB的存储方式">
+<meta property="og:url" content="https://chitian-victor.github.io/posts/mysql-innodb-storage/index.html">
+<meta property="og:site_name" content="Chitian&#39;s Blogs">
+<meta property="og:description" content="一、 从一条记录说起 这里说的存储方式主要以聚簇索引为例  1.  准备数据 建表  12345create table t1(c1 varchar(10),c2 varchar(10) not null,c3 char(10),c4 varchar(10)) charset&#x3D;ascii row_format&#x3D;compact;   插入数据  12insert into t1(c1,c2,c3,c">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://chitian-victor.github.io/img/luffy-icon.png">
+<meta property="article:published_time" content="2026-04-12T08:54:22.000Z">
+<meta property="article:modified_time" content="2026-04-30T02:07:31.818Z">
+<meta property="article:author" content="chitian-victor">
+<meta property="article:tag" content="mysql">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://chitian-victor.github.io/img/luffy-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "MySQL-InnoDB的存储方式",
+  "url": "https://chitian-victor.github.io/posts/mysql-innodb-storage/",
+  "image": "https://chitian-victor.github.io/img/luffy-icon.png",
+  "datePublished": "2026-04-12T08:54:22.000Z",
+  "dateModified": "2026-04-30T02:07:31.818Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "chitian-victor",
+      "url": "https://chitian-victor.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/luffy-icon.png"><link rel="canonical" href="https://chitian-victor.github.io/posts/mysql-innodb-storage/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="stylesheet" href="/css/index.css?v=5.5.5-b1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'MySQL-InnoDB的存储方式',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/hs-custom.css"><meta name="generator" content="Hexo 8.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/luffy-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">9</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">10</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Chitian's Blogs</span></a><a class="nav-page-title" href="/"><span class="site-name">MySQL-InnoDB的存储方式</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">MySQL-InnoDB的存储方式</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-04-12T08:54:22.000Z" title="发表于 2026-04-12 16:54:22">2026-04-12</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-04-30T02:07:31.818Z" title="更新于 2026-04-30 10:07:31">2026-04-30</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Tech/">Tech</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">3.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>10分钟</span></span></div></div></div><article class="container post-content" id="article-container"><h2 id="一、-从一条记录说起"><a href="#一、-从一条记录说起" class="headerlink" title="一、 从一条记录说起"></a>一、 从一条记录说起</h2><blockquote>
+<p>这里说的存储方式主要以聚簇索引为例</p>
+</blockquote>
+<h3 id="1-准备数据"><a href="#1-准备数据" class="headerlink" title="1.  准备数据"></a>1.  <strong>准备数据</strong></h3><ul>
+<li><strong>建表</strong></li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create table</span> t1(</span><br><span class="line">c1 <span class="type">varchar</span>(<span class="number">10</span>),</span><br><span class="line">c2 <span class="type">varchar</span>(<span class="number">10</span>) <span class="keyword">not null</span>,</span><br><span class="line">c3 <span class="type">char</span>(<span class="number">10</span>),</span><br><span class="line">c4 <span class="type">varchar</span>(<span class="number">10</span>)) charset<span class="operator">=</span>ascii row_format<span class="operator">=</span>compact;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>插入数据</strong></li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">insert into</span> t1(c1,c2,c3,c4) <span class="keyword">values</span>(<span class="string">&#x27;aaaa&#x27;</span>,<span class="string">&#x27;bbb&#x27;</span>,<span class="string">&#x27;cc&#x27;</span>,<span class="string">&#x27;d&#x27;</span>);</span><br><span class="line"><span class="keyword">insert into</span> t1(c1,c2,c3,c4) <span class="keyword">values</span>(<span class="string">&#x27;eeee&#x27;</span>,<span class="string">&#x27;fff&#x27;</span>,<span class="keyword">null</span>,<span class="keyword">null</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-存储方式"><a href="#2-存储方式" class="headerlink" title="2.  存储方式"></a>2.  存储方式</h3><p>在InnoDB中，记录数据的行格式有多种，有compact、redundant、dynamic、compressed四种，这里着重介绍compact行格式，其他大同小异。<br><img src='/img/mysql_innodb/compact_format.png' width="800"></p>
+<p><strong>记录的额外信息:</strong></p>
+<ul>
+<li>变长字段宽度列表<br>针对一些长度可变的数据类型（varchar、varbinary、text）的实际长度存储，按列逆序存储<br>第一条记录的该字段存储方式是‘0x01，0x03，0x04’ 分别对应c4，c2，c1<br>第二条记录的该字段存储方式是‘0x03，0x04’分别对应c2，c1。null值不存储</li>
+</ul>
+<blockquote>
+<p><mark>如何确定需要用几个字节存储某类型的长度</mark><br>假设varchar(M)类型，根据建表所使用的字符编码类型确定单字符最大占用字节数量W（比如ascii：W&#x3D;1，gbk：W&#x3D;2，utf8(utf8mb3)：W&#x3D;3），实际占用的字节数量L</p>
+<ul>
+<li>M*W&lt;&#x3D;255 ，使用一个字节存储长度（和示例相同）</li>
+<li>M*W&gt;255<ul>
+<li>L&lt;&#x3D;127，使用一个字节存储，首位置0</li>
+<li>L&gt;127，使用两个字节存储，首位置1</li>
+</ul>
+</li>
+</ul>
+<p>还有一点，如果使用的字符编码类型是可变类型，那么即便使用的char(M)类型，也会被写入到该字段中</p>
+</blockquote>
+<ul>
+<li><p>null值列表<br>针对每一个可以为null的列都会对应一个二进制位，按列逆序存储<br>第一条记录的该字段存储方式是‘0b00000000’，分别对应c4，c3，c1<br>第二条记录的该字段存储方式是‘0b00000110’，分别对应c4，c3，c1</p>
+</li>
+<li><p>记录头信息（占用5个字节，前两位bit预留未用）</p>
+</li>
+</ul>
+<img src='/img/mysql_innodb/record_header.png' width="800">
+
+<p><strong>delete_flag</strong>：占用1bit，软删除标志位<br><strong>min_rec_flag</strong>：占用1bit，B+树的每层非叶子节点中最小的目录项记录标志位<br><strong>n_owned</strong>：占用4bit，在innodb中一个页面的记录会被分为若干个组，每个组都有一个”带头大 哥“，其余的都是”小弟“。”带头大哥“记录的n_owned 代表着该组中所有记录的条数，”小弟“的 n_owned 都为0<br><strong>heap_no</strong>：占用13bit，表示当前记录在页面堆中的相对位置编号<br><strong>record_type</strong>：占用3bit，表示记录的类型（0表示普通记录，1表示B+树中非叶子节点中的记录， 2表示Infimum，3表示Supremum）<br><strong>next_record</strong>：占用16bit，表示下一条记录的相对位置</p>
+<p><strong>记录的真实数据</strong>：</p>
+<ul>
+<li>row_id：如果建表时没有指定主键，并且表中又找不出非空且唯一的列的话，那么MySQL会自动为该表生成一个隐藏的有序的列作为主键列，这个列就是row_id，用6个字节表示（所以该ID能表示的范围就是1 ~ 2 ^48 ）</li>
+<li>transaction_id：记录着最近修改这条数据的事务ID</li>
+<li>roll_pointer：回滚指针，主要是为innodb的mvcc生成版本链使用</li>
+<li>剩下的部分就是对真实数据的存储了</li>
+</ul>
+<h2 id="二、多条记录汇聚成页"><a href="#二、多条记录汇聚成页" class="headerlink" title="二、多条记录汇聚成页"></a>二、多条记录汇聚成页</h2><h3 id="1-准备数据-1"><a href="#1-准备数据-1" class="headerlink" title="1.  准备数据"></a>1.  准备数据</h3><ul>
+<li>首先新建另一张表：</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create table</span> t2(</span><br><span class="line">c1 <span class="type">int</span>,</span><br><span class="line">c2 <span class="type">int</span>,</span><br><span class="line">c3 <span class="type">varchar</span>(<span class="number">10000</span>),</span><br><span class="line"><span class="keyword">primary key</span>(c1)) charset<span class="operator">=</span>ascii row_format<span class="operator">=</span>compact;          </span><br></pre></td></tr></table></figure>
+
+<h3 id="2-InnoDB数据页格式"><a href="#2-InnoDB数据页格式" class="headerlink" title="2.  InnoDB数据页格式"></a>2.  InnoDB数据页格式</h3><p>InnoDB的数据页大小一般是16KB的，存储方式如下：</p>
+<img src='/img/mysql_innodb/data_page.svg' width="800">
+
+<ul>
+<li>Infimum和Supremum<br>Infimum和Supremum分别为页中的最小记录和最大记录，每条记录都是5字节额外信息和8字节单词拼写共13字节，起到哨兵的作用</li>
+<li>User Record（图中的delete_flg&#x3D;delete_mask、min_rec_flag&#x3D;min_rec_mask）<br>实际上有序的记录不一定能够存储在连续的内存空间中，主要依靠记录头信息中的next_record字段，可以抵达下一条记录的真实数据的起始位置，这样向右就是真实数据，向左就是该条记录的额外信息（而变长字段长度列表、null值列表刚好是逆序存储）。</li>
+</ul>
+<img src='/img/mysql_innodb/user_record.png' width="800">
+
+<ul>
+<li>Page Directory<br>InnoDB是会给包括Infimum和Supremum在内的记录进行分组的，Infimum自成一组，Supremum最多拥有8条记录，其余都在4-8条，也就是前面说的组内‘老大’的记录头信息中的n_owned字段的值。而组内的‘老大’的的真实数据的起始点在页内的位置作为一个槽位放入Page Directory存储起来。</li>
+</ul>
+<blockquote>
+<p><mark>为什么要放到Page Directory中</mark><br>假设继续插入12条数据，目前的主键id增到16，如下图。 比如想要找到主键id&#x3D;6的记录，那么就可以在Page Directory使用二分法快速定位id&#x3D;6所在记录的位置。采用分组的形式而没有记录所有地址可能是为了节省空间。</p>
+</blockquote>
+<ul>
+<li>File Header</li>
+</ul>
+<img src='/img/mysql_innodb/file_header.png' width="800">
+
+
+<ul>
+<li>Page Header</li>
+</ul>
+<img src='/img/mysql_innodb/page_header.png' width="800">
+
+<ul>
+<li>File Trailer<br>占用8个字节，前4个字节表示校验和，和File Header的FILE_PAGE_SPACE_OR_CHKSUM字段呼应。需要在将整页刷新至磁盘的时候，需要计算整页的校验和，只有当头尾的校验和一致才表示整页写入磁盘；后4个字节与FILE_PAGE_SPACE_OR_CHKSUM的后4个字节进行对比，校验完整性</li>
+</ul>
+<blockquote>
+<p>比如在机器宕机或者停电的情况下，整个16KB大小的页面只有前半部分写入磁盘，那么可以对比File Header和File Trailer的校验和检测出来</p>
+</blockquote>
+<h2 id="三、-多个页面构建成树"><a href="#三、-多个页面构建成树" class="headerlink" title="三、 多个页面构建成树"></a>三、 多个页面构建成树</h2><h3 id="1-目录项（非叶子节点）"><a href="#1-目录项（非叶子节点）" class="headerlink" title="1.  目录项（非叶子节点）"></a>1.  目录项（非叶子节点）</h3><p>叶子节点存储用户的真实记录，而目录项的用户记录只有两列，主键id和页号。页号是指向的下一层级的某个页面编号（File Header中FILE_PAGE_OFFSET），主键id是某个页面的最小主键id值。</p>
+<p>这里依旧使用上面的那张表t2，插入若干条数据，假设一页最多存储4条用户记录，形成如下树状结构。记录与记录之间采用next_record连接形成单向链表，同层级的页与页之间采用File Header中的FILE_PAGE_PREV和FIEL_PAGE_NEXT两个字段连接形成双向链表（页号可以不连续）。</p>
+<img src='/img/mysql_innodb/page_tree.png' width="800">
+
+<blockquote>
+<p>在二级索引形成的B+树中的非叶子结点存储的用户记录由索引值、主键id组成，当索引值一样那么会根据主键id作比较</p>
+</blockquote>
+<h3 id="2-索引的代价"><a href="#2-索引的代价" class="headerlink" title="2.  索引的代价"></a>2.  索引的代价</h3><ul>
+<li>空间成本<br>这一点是显而易见的，每建立一个索引都会为它搭建一颗B+树</li>
+<li>时间成本<ul>
+<li>每次的增删改操作，可能会对节点和记录的排序造成破坏，需要额外的时间去做页面之间和页面内记录的调整</li>
+<li>在执行查询语句之前，首先要生成一个执行计划，会根据查询语句中的条件选取最优的索引方案，如果索引过多，也会增加分析成本的耗时</li>
+</ul>
+</li>
+<li>更好的创建和使用索引<ul>
+<li>只为用于搜索、排序或分组的列创建索引</li>
+<li>考虑索引列中不重复值的占比</li>
+<li>索引列的类型尽量小（有时可以采用列前缀建立索引）</li>
+<li>减少回表，使用覆盖索引</li>
+<li>让索引列以列名的形式在搜索条件中出现</li>
+<li>避免冗余和重复索引</li>
+</ul>
+</li>
+</ul>
+<h2 id="四、多棵树的组织方式-表空间"><a href="#四、多棵树的组织方式-表空间" class="headerlink" title="四、多棵树的组织方式-表空间"></a>四、多棵树的组织方式-表空间</h2><h3 id="1-落入磁盘"><a href="#1-落入磁盘" class="headerlink" title="1.  落入磁盘"></a>1.  落入磁盘</h3><p>每次执行‘create database table_name;’新建数据库时就会在mysql的数据目录的文件路径下新建一个子目录。</p>
+<p>每次执行‘create table table_name(c1 int);’时就会在子目录下新建一个table_name.frm文件，用来描述表的结构，写入数据会创建另一个名为table_name.ibd的文件用于存储用户数据。</p>
+<h3 id="2-独立表空间结构"><a href="#2-独立表空间结构" class="headerlink" title="2.  独立表空间结构"></a>2.  独立表空间结构</h3><p>InnoDB有多种表空间，这里主要介绍独立表空间「也是mysql5.6之后默认的表空间」</p>
+<h4 id="基本概念："><a href="#基本概念：" class="headerlink" title="基本概念："></a>基本概念：</h4><p>为了更好地关联表空间中的页，采用了分区和分组的概念</p>
+<ul>
+<li>区（extent）：连续的64个页就是一个区，大小就是64*16KB&#x3D;1MB</li>
+<li>组：连续的256个区划分为一组</li>
+<li>段：一颗B+树索引会分为两个段，一部分存储叶子节点的区的集合，另一部分存储非叶子节点的区的集合</li>
+</ul>
+<blockquote>
+<p><mark>为什么出现区的概念</mark><br>当需要获取大量记录时，单纯通过页与页之间行的双向链表去遍历，由于页号不一定是连续的，跳跃性可能会非常大，造成多次磁盘随机io。所以后续采用以区为单位分配空间，而区是由的是连续的64个页组成，这样能够更大概率的使用顺序io，缺点是可能造成空间浪费</p>
+</blockquote>
+<img src='/img/mysql_innodb/table_space.png' width="800">
+
+<p>在File Header中的FILE_PAGE_TYPE字段表示页的类型，前面所说的B+树上的页面都数属于FILE_PAGE_INDEX类型<br>上图中可以看到每一个组的第一个分区前三个页面类型是有一些不一样的：</p>
+<ul>
+<li>第一个页面类型是FILE_PAGE_TYPE_FSP_HDR类型，用来记录整个表空间的一些整体属性一级本组内所有区的属性</li>
+<li>第二个页面类型是FILE_PAGE_IBUF_BITMAP，用来存储change buffer的一些信息</li>
+<li>第三个页面类型是FILE_PAGE_INODE，用来存储INODE Entry结构体</li>
+</ul>
+<p>FILE_PAGE_TYPE的枚举值也还有很多其他类型如下图所示<br><img src='/img/mysql_innodb/file_page_type.png' width="800"></p>
+<h4 id="组织方式："><a href="#组织方式：" class="headerlink" title="组织方式："></a>组织方式：</h4><ul>
+<li>区的状态<ul>
+<li>空闲的区FREE：还没有用到该区的任何页面</li>
+<li>有剩余空间的碎片区FREE_FRAG：表示碎片区还有可以被分配的空闲页面</li>
+<li>没有有剩余空间的碎片区FULL_FRAG</li>
+<li>附属于某个段的区FSEG</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>碎片区出现的原因：在以区为单位为段分配空间的时候，如果数据量非常小，根本用不到64个页面这么大的空间，就可以先放到碎片区中存储，碎片区属于不同段的公共空间</p>
+</blockquote>
+<ul>
+<li>区的数据结构EDES Entry</li>
+</ul>
+<img src='/img/mysql_innodb/entry.png' width="800">
+
+<blockquote>
+<ul>
+<li>Segment ID：区所属的段id</li>
+<li>List Node：用于将区串联起来，形成双向链表，共计三种（表空间维度）<ul>
+<li>归属于表空间的三个链表<ul>
+<li>FREE链表：将FREE状态的区串联起来</li>
+<li>FREE_FRAG链表：同上</li>
+<li>FULL_FRAG链表：同上</li>
+</ul>
+</li>
+<li>归属于段的三个链表<ul>
+<li>FREE链表：区的状态是附属于段，且所有页面空闲</li>
+<li>NOT_FULL链表：区的状态是附属于段，且部分页面空闲</li>
+<li>FULL链表：区的状态是附属于段，且无页面空闲</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>state：即前面说的区的状态</li>
+<li>Page State Bitmap：共计16*8&#x3D;128位，而区内包含64个页，所以每个页占两位，第一位表示该页是否空闲，第二位为预留位</li>
+</ul>
+</blockquote>
+<ul>
+<li>段的数据结构INODE entry</li>
+</ul>
+<img src='/img/mysql_innodb/segment.png' width="800">
+
+
+<blockquote>
+<ul>
+<li>Segment ID：表示段id</li>
+<li>NOT_FULL_N_USE：表示前面提到的NOT_FULL链表的已用页面数量</li>
+<li>3个List Base Node分别记录了归属于段的三个链表的头节点和尾节点</li>
+<li>Magic Number：无特殊含义</li>
+<li>Fragment Array Entry：因为段内数据不一定只会落到归属于段的区上，也可能落到碎片区中，这里记录了使用到的多个碎片区的信息</li>
+</ul>
+</blockquote>
+<h4 id="页面类型："><a href="#页面类型：" class="headerlink" title="页面类型："></a>页面类型：</h4><ul>
+<li>FILE_PAGE_TYPE_FSP_HDR页面类型</li>
+</ul>
+<img src='/img/mysql_innodb/FILE_PAGE_TYPE_FSP_HDR.png' width="800">
+
+
+<blockquote>
+<ul>
+<li>File Space Header：存储的是表空间的一些整体属性信息，比如前面说的归属于表空间的三个链表的基节点的List Base Node结构，还有后面即将提到的两个链表基节点结构</li>
+<li>XDES Entry 0-255：表示组内的256个区的结构体</li>
+</ul>
+</blockquote>
+<blockquote>
+<p><mark> 分组的原因</mark><br>当数据量比较大时，一个页面是无法存储所有区的XDES Entry结构的，所以分为了若干个组进行管理</p>
+</blockquote>
+<ul>
+<li>FILE_PAGE_TYPE_XDES页面类型<br>作为表空间的非第一组的第一个区的第一个页面，他的结构和FILE_PAGE_TYPE_FSP_HDR类似，去掉了File Space Header</li>
+</ul>
+<img src='/img/mysql_innodb/FILE_PAGE_TYPE_XDES.png' width="800">
+
+<ul>
+<li>FILE_PAGE_INODE类型页面</li>
+</ul>
+<img src='/img/mysql_innodb/FILE_PAGE_INODE.png' width="800">
+
+<blockquote>
+<p>这个页面的主要作用就是用来存储前面提到的段的结构INODE Entry</p>
+<ul>
+<li>List Node for INODE Page List：可以看出这个页面最多存储85个段结构，为了兼容超过85个情况，涉及的链表结构，将表空间内的存储段结构的页面串联起来，形成两类双向链表。此外，这两个链表的基节点会被放入到FILE_PAGE_TYPE_FSP_HDR页面中的File Space Header中<ul>
+<li>SEG_INODE_FULL链表：已经没有空闲空间来存储INODE_Entry结构</li>
+<li>SEG_INODE_FREE链表：还有空闲空间来存储INODE_Entry结构</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li>INODE Entry0-84：表示被存入该页面的段的结构</li>
+</ul>
+</blockquote>
+<blockquote>
+<p><mark>如何利用数据页面反查段的INODE Entry结构的存储位置</mark><br>在FILE_PAGE_INDEX类型的页面中，在Page Header中是有记录的，分别为</p>
+<ul>
+<li>PAGE_BTR_SEG_LEFT：记录了叶子节点段的INODE_Entry位置</li>
+<li>PAGE_BTR_SEG_TOP：记录了非叶子节点段的INODE_Entry位置<br>因为每一颗B+树都会有两个段（叶子节点段和非叶子节点段），所以只需要在B+树中的根节点页面记录该信息即可</li>
+</ul>
+</blockquote>
+<h2 id="参考文档："><a href="#参考文档：" class="headerlink" title="参考文档："></a>参考文档：</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/Hellowenpan/article/details/122045318">https://blog.csdn.net/Hellowenpan/article/details/122045318</a><br><a target="_blank" rel="noopener" href="https://juejin.cn/book/6844733769996304392/section/6844733770046636040">https://juejin.cn/book/6844733769996304392/section/6844733770046636040</a></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://chitian-victor.github.io">chitian-victor</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://chitian-victor.github.io/posts/mysql-innodb-storage/">https://chitian-victor.github.io/posts/mysql-innodb-storage/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://chitian-victor.github.io" target="_blank">Chitian's Blogs</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/mysql/">mysql</a></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/posts/mysql-innodb-redolog/" title="Mysql-InnoDB redolog的设计与实现"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Mysql-InnoDB redolog的设计与实现</div></div><div class="info-2"><div class="info-item-1">一、前情提要 数据的组织方式      单个页面的结构     二、Buffer Pool在Mysql服务器启动时会向操作系统申请一片连续的内存，作为连通cpu和磁盘的桥梁，加快读写速度。 1.  Buffer Pool的组成    控制块控制块和缓存页是一一对应的关系，里面包含对应缓存页的所属表空间编号、页号、缓冲页在Buffer Pool中的地址、链表节点信息等等  缓存页数据在InnoDB中的存储方式都是以页为单位存储的，默认16KB大小，这里也是一样的  碎片由于控制块的大小是不固定的「比如DEBUG模式下占用缓冲页大小的5%左右，非DEBUG模式下更小一些」，很难将Buffer Pool的大小设置为控制块加缓存页的整数倍，那么最后剩余的空间不足以再分配一对控制块和缓冲页，就会成为内存碎片   2.  组织方式 free链表当从磁盘上读取一个新数据页时，需要判断是否还存在空闲的缓存页可以使用，空闲的缓冲页的组织方式就是链表，链表中的节点并不是缓冲页而是记录着缓冲页地址的控制块     读取一个数据页的时候，判断该数据页是否已经存在Buffer Pool中的方法是通过哈希表...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/posts/mysql-innodb-redolog/" title="Mysql-InnoDB redolog的设计与实现"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-12</div><div class="info-item-2">Mysql-InnoDB redolog的设计与实现</div></div><div class="info-2"><div class="info-item-1">一、前情提要 数据的组织方式      单个页面的结构     二、Buffer Pool在Mysql服务器启动时会向操作系统申请一片连续的内存，作为连通cpu和磁盘的桥梁，加快读写速度。 1.  Buffer Pool的组成    控制块控制块和缓存页是一一对应的关系，里面包含对应缓存页的所属表空间编号、页号、缓冲页在Buffer Pool中的地址、链表节点信息等等  缓存页数据在InnoDB中的存储方式都是以页为单位存储的，默认16KB大小，这里也是一样的  碎片由于控制块的大小是不固定的「比如DEBUG模式下占用缓冲页大小的5%左右，非DEBUG模式下更小一些」，很难将Buffer Pool的大小设置为控制块加缓存页的整数倍，那么最后剩余的空间不足以再分配一对控制块和缓冲页，就会成为内存碎片   2.  组织方式 free链表当从磁盘上读取一个新数据页时，需要判断是否还存在空闲的缓存页可以使用，空闲的缓冲页的组织方式就是链表，链表中的节点并不是缓冲页而是记录着缓冲页地址的控制块     读取一个数据页的时候，判断该数据页是否已经存在Buffer Pool中的方法是通过哈希表...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/luffy-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">chitian-victor</div><div class="author-info-description">珍惜每一天，享受每一天～</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">9</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">10</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/chitian-victor"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/chitian-victor" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="https://space.bilibili.com/51815484" target="_blank" title="Bilibili"><i class="fab fa-bilibili" style="color: #FA7299;"></i></a><a class="social-icon" href="https://qm.qq.com/q/IDDw5cTFcc" target="_blank" title="QQ群"><i class="fab fa-qq" style="color: #12B7F5;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content"></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81-%E4%BB%8E%E4%B8%80%E6%9D%A1%E8%AE%B0%E5%BD%95%E8%AF%B4%E8%B5%B7"><span class="toc-text">一、 从一条记录说起</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%87%86%E5%A4%87%E6%95%B0%E6%8D%AE"><span class="toc-text">1.  准备数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%AD%98%E5%82%A8%E6%96%B9%E5%BC%8F"><span class="toc-text">2.  存储方式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%A4%9A%E6%9D%A1%E8%AE%B0%E5%BD%95%E6%B1%87%E8%81%9A%E6%88%90%E9%A1%B5"><span class="toc-text">二、多条记录汇聚成页</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%87%86%E5%A4%87%E6%95%B0%E6%8D%AE-1"><span class="toc-text">1.  准备数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-InnoDB%E6%95%B0%E6%8D%AE%E9%A1%B5%E6%A0%BC%E5%BC%8F"><span class="toc-text">2.  InnoDB数据页格式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81-%E5%A4%9A%E4%B8%AA%E9%A1%B5%E9%9D%A2%E6%9E%84%E5%BB%BA%E6%88%90%E6%A0%91"><span class="toc-text">三、 多个页面构建成树</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E7%9B%AE%E5%BD%95%E9%A1%B9%EF%BC%88%E9%9D%9E%E5%8F%B6%E5%AD%90%E8%8A%82%E7%82%B9%EF%BC%89"><span class="toc-text">1.  目录项（非叶子节点）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E7%B4%A2%E5%BC%95%E7%9A%84%E4%BB%A3%E4%BB%B7"><span class="toc-text">2.  索引的代价</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%A4%9A%E6%A3%B5%E6%A0%91%E7%9A%84%E7%BB%84%E7%BB%87%E6%96%B9%E5%BC%8F-%E8%A1%A8%E7%A9%BA%E9%97%B4"><span class="toc-text">四、多棵树的组织方式-表空间</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E8%90%BD%E5%85%A5%E7%A3%81%E7%9B%98"><span class="toc-text">1.  落入磁盘</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E7%8B%AC%E7%AB%8B%E8%A1%A8%E7%A9%BA%E9%97%B4%E7%BB%93%E6%9E%84"><span class="toc-text">2.  独立表空间结构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%EF%BC%9A"><span class="toc-text">基本概念：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BB%84%E7%BB%87%E6%96%B9%E5%BC%8F%EF%BC%9A"><span class="toc-text">组织方式：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A1%B5%E9%9D%A2%E7%B1%BB%E5%9E%8B%EF%BC%9A"><span class="toc-text">页面类型：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3%EF%BC%9A"><span class="toc-text">参考文档：</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/mysql-innodb-storage/" title="MySQL-InnoDB的存储方式">MySQL-InnoDB的存储方式</a><time datetime="2026-04-12T08:54:22.000Z" title="发表于 2026-04-12 16:54:22">2026-04-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/mysql-innodb-redolog/" title="Mysql-InnoDB redolog的设计与实现">Mysql-InnoDB redolog的设计与实现</a><time datetime="2026-03-12T08:54:22.000Z" title="发表于 2026-03-12 16:54:22">2026-03-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/pumpkin_faucet/" title="代币水龙头项目🎃">代币水龙头项目🎃</a><time datetime="2026-01-16T04:37:36.000Z" title="发表于 2026-01-16 12:37:36">2026-01-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/Layer2/" title="以太坊扩容方案 - Layer2">以太坊扩容方案 - Layer2</a><time datetime="2026-01-12T08:54:22.000Z" title="发表于 2026-01-12 16:54:22">2026-01-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/EVM/" title="EVM(以太坊虚拟机)">EVM(以太坊虚拟机)</a><time datetime="2026-01-06T13:37:36.000Z" title="发表于 2026-01-06 21:37:36">2026-01-06</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2026 By chitian-victor</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.5-b1</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.5-b1"></script><script src="/js/main.js?v=5.5.5-b1"></script><script src="/js/tw_cn.js?v=5.5.5-b1"></script><div class="js-pjax"></div></div></body></html>

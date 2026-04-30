@@ -1,0 +1,229 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Chitian's Blogs</title><meta name="author" content="chitian-victor"><meta name="copyright" content="chitian-victor"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="专注后端技术分享,包括但不限于,区块链blockchain,golang,消息队列mq,mysql,redis,web3">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Chitian&#39;s Blogs">
+<meta property="og:url" content="https://chitian-victor.github.io/index.html">
+<meta property="og:site_name" content="Chitian&#39;s Blogs">
+<meta property="og:description" content="专注后端技术分享,包括但不限于,区块链blockchain,golang,消息队列mq,mysql,redis,web3">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://chitian-victor.github.io/img/luffy-icon.png">
+<meta property="article:author" content="chitian-victor">
+<meta property="article:tag" content="backend">
+<meta property="article:tag" content="blockchain">
+<meta property="article:tag" content="golang">
+<meta property="article:tag" content="story">
+<meta property="article:tag" content="tutorial">
+<meta property="article:tag" content="web3">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://chitian-victor.github.io/img/luffy-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Chitian's Blogs",
+  "alternateName": [
+    "chitian-victor.github.io"
+  ],
+  "url": "https://chitian-victor.github.io/"
+}</script><link rel="shortcut icon" href="/img/luffy-icon.png"><link rel="canonical" href="https://chitian-victor.github.io/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="stylesheet" href="/css/index.css?v=5.5.5-b1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Chitian\'s Blogs',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'home'
+}</script><link rel="stylesheet" href="/hs-custom.css"><meta name="generator" content="Hexo 8.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/luffy-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">9</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">10</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Chitian's Blogs</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><h1 class="title-seo">Chitian's Blogs</h1></header><main class="layout" id="content-inner"><div class="recent-posts nc" id="recent-posts"><div class="recent-post-items"><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/posts/mysql-innodb-storage/" title="MySQL-InnoDB的存储方式">MySQL-InnoDB的存储方式</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-04-12T08:54:22.000Z" title="发表于 2026-04-12 16:54:22">2026-04-12</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Tech/">Tech</a></span></div><div class="content">一、 从一条记录说起 这里说的存储方式主要以聚簇索引为例  1.  准备数据 建表  12345create table t1(c1 varchar(10),c2 varchar(10) not null,c3 char(10),c4 varchar(10)) charset=ascii row_format=compact;   插入数据  12insert into t1(c1,c2,c3,c4) values(&#x27;aaaa&#x27;,&#x27;bbb&#x27;,&#x27;cc&#x27;,&#x27;d&#x27;);insert into t1(c1,c2,c3,c4) values(&#x27;eeee&#x27;,&#x27;fff&#x27;,null,null);  2.  存储方式在InnoDB中，记录数据的行格式有多种，有compact、redundant、dynamic、compressed四种，这里着重介绍compact行格式，其他大同小异。 记录的额外信息:  变长字段宽度列表针对一些长度可变的数据类型（varchar、varbinary...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/posts/mysql-innodb-redolog/" title="Mysql-InnoDB redolog的设计与实现">Mysql-InnoDB redolog的设计与实现</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-03-12T08:54:22.000Z" title="发表于 2026-03-12 16:54:22">2026-03-12</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Tech/">Tech</a></span></div><div class="content">一、前情提要 数据的组织方式      单个页面的结构     二、Buffer Pool在Mysql服务器启动时会向操作系统申请一片连续的内存，作为连通cpu和磁盘的桥梁，加快读写速度。 1.  Buffer Pool的组成    控制块控制块和缓存页是一一对应的关系，里面包含对应缓存页的所属表空间编号、页号、缓冲页在Buffer Pool中的地址、链表节点信息等等  缓存页数据在InnoDB中的存储方式都是以页为单位存储的，默认16KB大小，这里也是一样的  碎片由于控制块的大小是不固定的「比如DEBUG模式下占用缓冲页大小的5%左右，非DEBUG模式下更小一些」，很难将Buffer Pool的大小设置为控制块加缓存页的整数倍，那么最后剩余的空间不足以再分配一对控制块和缓冲页，就会成为内存碎片   2.  组织方式 free链表当从磁盘上读取一个新数据页时，需要判断是否还存在空闲的缓存页可以使用，空闲的缓冲页的组织方式就是链表，链表中的节点并不是缓冲页而是记录着缓冲页地址的控制块     读取一个数据页的时候，判断该数据页是否已经存在Buffer Pool中的方法是通过哈希表...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/posts/pumpkin_faucet/" title="代币水龙头项目🎃">代币水龙头项目🎃</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-01-16T04:37:36.000Z" title="发表于 2026-01-16 12:37:36">2026-01-16</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Tech/">Tech</a></span></div><div class="content">一、背景 项目地址：https://github.com/chitian-victor/pumpkin_faucet  这是一个基于 Next.js 和 Foundry 构建代币水龙头项目，支持用户在一定的时间间隔内领取指定数量的代币，仅供学习使用 项目展示 后续可以自行拓展的功能：  支持修改领取间隔以及领取数量 支持捐赠代币 支持修改代币和水龙头地址     项目部署&amp;体验 在进入开发之前一定要清楚，我们做的到底是个什么东西…..  1. 后端部署12345cd backend# 首先，单开一个 terminal 执行下面的指令启动 foundry 的测试区块节点，控制台会输出固定的 10 个公钥和私钥地址anvil# 之后再单开一个 terminal 部署上我们的合约，并进行初始化make init  2. 前端部署123cd frontendnpm installnpm run dev  3. 修改水龙头地址 path: pumpkin_faucet&#x2F;frontend&#x2F;components&#x2F;context.tsx  12// 找到下面...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/posts/Layer2/" title="以太坊扩容方案 - Layer2">以太坊扩容方案 - Layer2</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-01-12T08:54:22.000Z" title="发表于 2026-01-12 16:54:22">2026-01-12</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Tech/">Tech</a></span></div><div class="content">一、背景区块链技术存在着“不可能三角”，即无法同时达到 可扩展（Scalability） 、去中心化（Decentralization） 、安全（Security） ，三者只能得其二  可扩展性：每秒可以处理大量交易。 去中心化：拥有大量参与区块生产和验证交易的节点。 安全性：获得网络的多数控制权需要非常高昂的成本。  以太坊的底层设计是将安全性与去中心化 放在了不可能三角的首位，这也就造成了性能的先天不足，无法满足大规模的交互。当前以太坊的 TPS 约 25-30 TPS（出块 12 秒 &#x2F; 块，Gas 上限 60M，2025 年Fusaka 升级后） ，对比传统支付系统：Visa 的峰值 TPS 约为 24,000 笔 &#x2F; 秒，支付宝的峰值 TPS 约为 100,000 笔 &#x2F; 秒。以太坊的性能差距达到了千倍级别，根本无法支撑大规模的日常交易。 二、扩容手段 简单说，以太坊扩容就是为了又快又省钱，提升用户体验    非主流扩容手段 以下的扩容手段目前已经不再是主流方案，而且大多也都转型为了 rollup，可以选择性了解  分片（sharding）...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/posts/EVM/" title="EVM(以太坊虚拟机)">EVM(以太坊虚拟机)</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-01-06T13:37:36.000Z" title="发表于 2026-01-06 21:37:36">2026-01-06</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Tech/">Tech</a></span></div><div class="content">一、定义EVM 全称是 Ethereum Virtual Machine ，具备以下特性：  虚拟运行环境： 它不直接运行在硬件上，而是作为一个软件层运行在每一个以太坊节点（计算机）中。 沙盒化（Sandboxed）： EVM 是完全隔离的。在 EVM 中运行的代码（智能合约）无法访问网络、文件系统或其他进程。这保证了即使合约有恶意代码，也不会损害节点本身。 统一性： 无论在 Windows、Linux 还是 macOS 上运行以太坊节点，EVM 的执行结果都是完全一致的。  二、工作原理 1. 代码的编译与执行流程 编写： 开发者写好 Solidity 代码。 编译： 编译器将代码转换为 Bytecode（字节码）。这是 EVM 唯一能读懂的语言（一串十六进制数字）。 部署： 字节码被作为数据发送到区块链上存储。 执行： 当用户调用合约时，EVM 读取这些字节码，并将其分解为 Opcode（操作码） 逐行执行。实际是底层的 switch-case 解释器中逐条触发宿主机早已编译好的对应逻辑「比如 go 编写的 geth，把 Opcode 映射成了已经编译好的 go 代码，复用这...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/posts/advanced_errgroup/" title="errgroup 改进版">errgroup 改进版</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-12-16T13:37:36.000Z" title="发表于 2025-12-16 21:37:36">2025-12-16</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Tech/">Tech</a></span></div><div class="content">一、概述 golang官方版本：golang.org&#x2F;x&#x2F;sync&#x2F;errgroup 改进版：https://github.com/chitian-victor/errgroup  核心方法： golang官方版本的介绍   errgroup.WithContext， 初始化Group变量，生成新的带有cancel方法的context变量  1234func WithContext(ctx context.Context) (*Group, context.Context) &#123;    ctx, cancel := context.WithCancel(ctx)    return &amp;Group&#123;cancel: cancel&#125;, ctx&#125;   Group.Go，发起协程，监听到error产生，调用cancel方法  12345678910111213141516171819func (g *Group) Go(f func() error) &#123;    if g.sem != nil &#123;...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/posts/memory-assistant/" title="用 python 实现一个记忆助手">用 python 实现一个记忆助手</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-12-06T13:37:36.000Z" title="发表于 2025-12-06 21:37:36">2025-12-06</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Tech/">Tech</a></span></div><div class="content">一、背景 仓库地址：https://github.com/chitian-victor/memory-assistant  记忆的本质，无非就是重复再重复。为了适配我日常工作与生活中的英语需求，一款辅助提升词汇量的工具应运而生。它不止于背单词，而是万物皆可记，万物皆可背。市面上很多单词软件都只能背单词，而且是固定词库里面的，不足够开放，这也是我开发该工具的主要原因，要不然就不会重复造轮子了。 二、工具描述使用方式 安装依赖： python &gt;&#x3D; 3.11 pip install tkmacosx   执行 make 指令生成软件包「软件包位置：.&#x2F;dist&#x2F;app.app」 数据默认存储在了~/my_github/memory-assistant-private/v2/data/items.txt，可以通过修改代码修改存储位置  基本功能 支持手动添加词条 支持生成指定数量的复习词条列表 支持词条打标：认识&#x2F;不认识，并且支持删除      核心算法 这里的算法指的是如何为每个词条生成需要复习的权重，这里参考了艾宾浩斯公式，同时加入了自...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/posts/goroutine_pool/" title="用 go 实现一个协程池">用 go 实现一个协程池</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2025-01-06T13:37:36.000Z" title="发表于 2025-01-06 21:37:36">2025-01-06</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Tech/">Tech</a></span></div><div class="content">描述MVP[已实现]:  固定协程&#x2F;worker数量 自动领取&amp;执行任务 支持协程池停止 支持任务提交&amp;等待完成 支持调整任务队列长度    拓展[待添加]：  支持协程数量动态&#x2F;手动调整：可以通过新旧替换的方式，先启动新的，再关闭旧的 支持任务超时：利用 context.withtimeout 实现 支持查看任务结果：将 taskFunc 用 struct 包起来，包含任务 ID 和任务结果  代码实现123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858687888990919293949596979899100101102103package testimport (    &quot;context&quot;    &quot;errors&quot;    &quot...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/posts/p2p/" title="P2P 简介">P2P 简介</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-01-12T08:54:22.000Z" title="发表于 2024-01-12 16:54:22">2024-01-12</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Tech/">Tech</a></span></div><div class="content">1. 节点发现：如何找到第一个节点 引导节点 (Bootstrap Nodes &#x2F; Seed Nodes)： 这是 P2P 网络的“出生点”。P2P 软件的源码里通常会硬编码（Hardcode）几个由官方或社区维护的、长期在线的公网 IP 地址。或者，种子文件里面会带有下载节点 IP 地址  启动流程： 你的节点启动后，会先连接这些引导节点。引导节点本身不处理业务逻辑，它只做一件事——把它认识的其他几十个节点的 IP 列表发给你。拿到列表后，你就可以断开引导节点，去和这些普通节点建立真实的连接了。   2. 网络拓扑与路由 (Topology &amp; Routing)：怎么传递消息？ 无结构网络 (Unstructured) &amp; Gossip 协议：  原理： 节点之间是随机连接的。当你想发送一条消息时，你把它发给你认识的邻居（比如 5 个节点），这 5 个邻居再各自发给他们的邻居。就像病毒传播或者人群中散播“流言（Gossip）”一样，消息会呈指数级扩散到全网。 特点： 极其健壮，哪怕挂掉一半节点网络也能运转。但极其浪费带宽（存在大量重复消息）。   结构...</div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/luffy-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">chitian-victor</div><div class="author-info-description">珍惜每一天，享受每一天～</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">9</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">10</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/chitian-victor"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/chitian-victor" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="https://space.bilibili.com/51815484" target="_blank" title="Bilibili"><i class="fab fa-bilibili" style="color: #FA7299;"></i></a><a class="social-icon" href="https://qm.qq.com/q/IDDw5cTFcc" target="_blank" title="QQ群"><i class="fab fa-qq" style="color: #12B7F5;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content"></div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/mysql-innodb-storage/" title="MySQL-InnoDB的存储方式">MySQL-InnoDB的存储方式</a><time datetime="2026-04-12T08:54:22.000Z" title="发表于 2026-04-12 16:54:22">2026-04-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/mysql-innodb-redolog/" title="Mysql-InnoDB redolog的设计与实现">Mysql-InnoDB redolog的设计与实现</a><time datetime="2026-03-12T08:54:22.000Z" title="发表于 2026-03-12 16:54:22">2026-03-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/pumpkin_faucet/" title="代币水龙头项目🎃">代币水龙头项目🎃</a><time datetime="2026-01-16T04:37:36.000Z" title="发表于 2026-01-16 12:37:36">2026-01-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/Layer2/" title="以太坊扩容方案 - Layer2">以太坊扩容方案 - Layer2</a><time datetime="2026-01-12T08:54:22.000Z" title="发表于 2026-01-12 16:54:22">2026-01-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/EVM/" title="EVM(以太坊虚拟机)">EVM(以太坊虚拟机)</a><time datetime="2026-01-06T13:37:36.000Z" title="发表于 2026-01-06 21:37:36">2026-01-06</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            
+          </div>
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Tech/"><span class="card-category-list-name">Tech</span><span class="card-category-list-count">9</span></a></li>
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/python/" style="font-size: 1.1em; color: #999">python</a> <a href="/tags/tkinter/" style="font-size: 1.1em; color: #999">tkinter</a> <a href="/tags/ethereum/" style="font-size: 1.5em; color: #99a9bf">ethereum</a> <a href="/tags/Foundry/" style="font-size: 1.1em; color: #999">Foundry</a> <a href="/tags/golang/" style="font-size: 1.3em; color: #99a1ac">golang</a> <a href="/tags/mysql/" style="font-size: 1.3em; color: #99a1ac">mysql</a> <a href="/tags/network/" style="font-size: 1.1em; color: #999">network</a> <a href="/tags/concurrency/" style="font-size: 1.3em; color: #99a1ac">concurrency</a> <a href="/tags/React/" style="font-size: 1.1em; color: #999">React</a> <a href="/tags/goroutine/" style="font-size: 1.3em; color: #99a1ac">goroutine</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>归档</span>
+      
+    </div>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/04/">
+            <span class="card-archive-list-date">
+              四月 2026
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/03/">
+            <span class="card-archive-list-date">
+              三月 2026
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2026/01/">
+            <span class="card-archive-list-date">
+              一月 2026
+            </span>
+            <span class="card-archive-list-count">3</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/12/">
+            <span class="card-archive-list-date">
+              十二月 2025
+            </span>
+            <span class="card-archive-list-count">2</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/01/">
+            <span class="card-archive-list-date">
+              一月 2025
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2024/01/">
+            <span class="card-archive-list-date">
+              一月 2024
+            </span>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2026 By chitian-victor</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.5-b1</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.5-b1"></script><script src="/js/main.js?v=5.5.5-b1"></script><script src="/js/tw_cn.js?v=5.5.5-b1"></script><div class="js-pjax"></div></div></body></html>
